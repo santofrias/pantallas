@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel de Administración</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Actualizar Resultados</h1>
+        <form method="POST">
+            {% for id, nombre, n1, n2, n3 in resultados %}
+            <div class="admin-block">
+                <h3>{{ nombre }}</h3>
+                <input type="text" name="numero_numero1_{{ id }}" value="{{ n1 }}">
+                <input type="text" name="numero_numero2_{{ id }}" value="{{ n2 }}">
+                <input type="text" name="numero_numero3_{{ id }}" value="{{ n3 }}">
+            </div>
+            {% endfor %}
+            <button type="submit">Guardar</button>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Sueños</title>
+<meta http-equiv="refresh" content="15;URL=/">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+background-color: white;
+
+    }
+    .fondo {
+      background-image: url('{{ url_for('static', filename='sueños.jpg') }}');
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div class="fondo"></div>
+</body>
+</html>

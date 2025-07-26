@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Pantalla 1 - Loterías</title>
+
+
+<style>
+        header {
+            width: 100%;
+            height: 200px; /* Ajusta la altura */
+            overflow: hidden;
+        }
+        header img {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="/static/nombrebanca.jpg" alt="Encabezado">
+    </header>
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="refresh" content="30;URL=sueños">
+<!--<meta http-equiv="refresh" content="30;URL=/">-->
+
+   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+
+
+
+<body>
+  <div class="container">
+    <h1>Loterías Americanas</h1>
+    <div class="logo-grid">
+
+      {% for id, nombre, n1, n2, n3 in resultados2 %}
+      <div class="logo">
+
+        <img src="{{ url_for('static', filename=nombre.lower().replace(' ', '_') + '.png') }}" alt="{{ nombre }}">
+        <p>{{ nombre }}</p>
+        <div class="circles">
+          <div class="circle">{{ n1 }}</div>
+          <div class="circle">{{ n2 }}</div>
+          <div class="circle">{{ n3 }}</div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+<script>
+    const lista = document.getElementById('lista-loterias');
+    let draggingItem = null;
+
+    lista.addEventListener('dragstart', (e) => {
+      draggingItem = e.target;
+      e.target.classList.add('dragging');
+    });
+
+    lista.addEventListener('dragend', (e) => {
+      e.target.classList.remove('dragging');
+      draggingItem = null;
+    });
+
+    lista.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      const afterElement = getDragAfterElement(lista, e.clientY);
+      if (afterElement == null) {
+        lista.appendChild(draggingItem);
+      } else {
+        lista.insertBefore(draggingItem, afterElement);
+      }
+    });
+
+    function getDragAfterElement(container, y) {
+      const draggableElements = [...container.querySelectorAll('li:not(.dragging)')];
+
+      return draggableElements.reduce((closest, child) => {
+        const box = child.getBoundingClientRect();
+        const offset = y - box.top - box.height / 2;
+        if (offset < 0 && offset > closest.offset) {
+          return { offset: offset, element: child };
+        } else {
+          return closest;
+        }
+      }, { offset: Number.NEGATIVE_INFINITY }).element;
+    }
+
+    function agregarLoteria() {
+      const input = document.getElementById('nuevaLoteria');
+      const nombre = input.value.trim();
+
+      if (nombre === '') {
+        alert('Por favor, escribe un nombre.');
+        return;
+      }
+
+      const nuevoItem = document.createElement('li');
+      nuevoItem.textContent = nombre;
+      nuevoItem.setAttribute('draggable', 'true');
+
+      // Agrega eventos de arrastrar
+      nuevoItem.addEventListener('dragstart', (e) => {
+        draggingItem = e.target;
+        e.target.classList.add('dragging');
+      });
+
+      nuevoItem.addEventListener('dragend', (e) => {
+        e.target.classList.remove('dragging');
+        draggingItem = null;
+      });
+
+      lista.appendChild(nuevoItem);
+      input.value = '';
+    }
+
+    function guardarOrden() {
+      const orden = [...lista.querySelectorAll('li')].map(li => li.textContent);
+      console.log('Nuevo orden:', orden);
+
+      // Aquí podrías enviar a tu backend si es necesario
+      // fetch('/guardar', { method: 'POST', ... });
+    }
+  </script>
+
+  </div>
+</body>
+</html>

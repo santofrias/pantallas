@@ -1,0 +1,31 @@
+from flask import Flask, render_template
+import sqlite3
+
+app = Flask(__name__)
+
+def obtener_resultados():
+    conn = sqlite3.connect('loterias.db')
+    cursor = conn.cursor()
+    cursor.execute("SELECT id, nombre, n1, n2, n3 FROM resultados ORDER BY id")
+    datos = cursor.fetchall()
+    conn.close()
+    return datos
+
+@app.route('/pantalla1.html')
+def pantalla1():
+    resultados = obtener_resultados()
+    principales = resultados[:6]
+    return render_template('pantalla1.html', resultados=principales)
+
+@app.route('/pantalla2.html')
+def pantalla2():
+    resultados = obtener_resultados()
+    secundarias = resultados[6:]
+    return render_template('pantalla2.html', otras_loterias=secundarias)
+
+@app.route('/')
+def inicio():
+    return render_template('pantalla1.html', resultados=obtener_resultados()[:6])
+
+if __name__ == '__main__':
+    app.run(debug=True)

@@ -1,0 +1,30 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Administrar Resultados</title>
+</head>
+<body>
+    <h1>Editar Resultados de Loterías</h1>
+    <form method="POST">
+        <table border="1">
+            <tr>
+                <th>Lotería</th>
+                <th>Número 1</th>
+                <th>Número 2</th>
+                <th>Número 3</th>
+            </tr>
+            {% for resultado in resultados %}
+            <tr>
+                <td>{{ resultado[1] }}</td>
+                <td><input type="text" name="numero_numero1_{{ resultado[0] }}" value="{{ resultado[2] }}"></td>
+                <td><input type="text" name="numero_numero2_{{ resultado[0] }}" value="{{ resultado[3] }}"></td>
+                <td><input type="text" name="numero_numero3_{{ resultado[0] }}" value="{{ resultado[4] }}"></td>
+            </tr>
+            {% endfor %}
+        </table>
+        <br>
+        <button type="submit">Guardar cambios</button>
+    </form>
+</body>
+</html>
