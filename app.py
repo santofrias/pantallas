@@ -1,12 +1,26 @@
 from flask import Flask, render_template, request, redirect
 import sqlite3
+import os
 
 app = Flask(__name__)
 
+# Ruta absoluta a la base de datos
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB1_PATH = os.path.join(BASE_DIR, "resultados.db")
+DB2_PATH = os.path.join(BASE_DIR, "resultados2.db")
+
 def get_resultados():
-    conn = sqlite3.connect("resultados.db")
+    conn = sqlite3.connect(DB1_PATH)
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM resultados")
+    datos = cursor.fetchall()
+    conn.close()
+    return datos
+
+def get_resultados2():
+    conn = sqlite3.connect(DB2_PATH)
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM resultados2")
     datos = cursor.fetchall()
     conn.close()
     return datos
@@ -15,17 +29,6 @@ def get_resultados():
 def index():
     resultados = get_resultados()
     return render_template("index.html", resultados=resultados)
-
-
-def get_resultados2():
-    conn = sqlite3.connect("resultados2.db")
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM resultados2")
-    datos = cursor.fetchall()
-    conn.close()
-    return datos
-
-
 
 @app.route("/pantalla1")
 def pantalla1():
@@ -36,9 +39,6 @@ def pantalla1():
 def sueños():
     return render_template("sueños.html")
 
-
-
-
 @app.route("/admin", methods=["GET", "POST"])
 def admin():
     if request.method == "POST":
@@ -46,7 +46,7 @@ def admin():
             if key.startswith("numero"):
                 _, campo, loteria_id = key.split("_")
                 valor = request.form[key]
-                conn = sqlite3.connect("resultados.db")
+                conn = sqlite3.connect(DB1_PATH)
                 cursor = conn.cursor()
                 cursor.execute(f"UPDATE resultados SET {campo} = ? WHERE id = ?", (valor, loteria_id))
                 conn.commit()
@@ -54,15 +54,15 @@ def admin():
         return redirect("/admin")
     resultados = get_resultados()
     return render_template("admin.html", resultados=resultados)
-@app.route("/admin2", methods=["GET", "POST"])
 
+@app.route("/admin2", methods=["GET", "POST"])
 def admin2():
     if request.method == "POST":
         for key in request.form:
             if key.startswith("numero"):
                 _, campo, loteria_id = key.split("_")
                 valor = request.form[key]
-                conn = sqlite3.connect("resultados2.db")
+                conn = sqlite3.connect(DB2_PATH)
                 cursor = conn.cursor()
                 cursor.execute(f"UPDATE resultados2 SET {campo} = ? WHERE id = ?", (valor, loteria_id))
                 conn.commit()
@@ -72,8 +72,4 @@ def admin2():
     return render_template("admin2.html", resultados=resultados)
 
 if __name__ == "__main__":
-    import os
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
-
-
+    app.run(debug=True)
